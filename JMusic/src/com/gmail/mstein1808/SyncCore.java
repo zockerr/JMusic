@@ -144,22 +144,22 @@ public class SyncCore implements Runnable{
 					String FileTarget;
 					switch(selectedIndex){
 					case 0:
-						FileTarget=target+"/"+currentSong.getTag("Artist")+"/"+currentSong.getTag("Album")+"/";
+						FileTarget="/"+currentSong.getTag("Artist")+"/"+currentSong.getTag("Album")+"/";
 						break;
 					case 1:
-						FileTarget=target+"/"+currentSong.getTag("Album")+"/";
+						FileTarget="/"+currentSong.getTag("Album")+"/";
 						break;
 					case 2:
-						FileTarget=target+"/"+currentSong.getTag("Artist")+"/";
+						FileTarget="/"+currentSong.getTag("Artist")+"/";
 						break;
 					case 3:
-						FileTarget=target+"/";
+						FileTarget="/";
 						break;
 					default:
-						FileTarget=target+"/"+currentSong.getTag("Artist")+"/"+currentSong.getTag("Album")+"/";
+						FileTarget="/"+currentSong.getTag("Artist")+"/"+currentSong.getTag("Album")+"/";
 						break;
 					}
-					String name=CopyFile(currentSong.getFilename(),target+"/"+currentSong.getTag("Artist")+"/"+currentSong.getTag("Album")+"/");
+					String name=CopyFile(currentSong.getFilename(),target+FileTarget);
 					String old = new String();
 					try {
 						FileReader fr = new FileReader(target+"/"+current.Name+".m3u");
@@ -176,7 +176,7 @@ public class SyncCore implements Runnable{
 					}
 					try{
 						FileWriter fw=new FileWriter(target+"/"+current.Name+".m3u");
-						fw.write(old+currentSong.getTag("Artist")+"/"+currentSong.getTag("Album")+"/"+name+"\n");
+						fw.write(old+FileTarget+name+"\n");
 						fw.close();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
