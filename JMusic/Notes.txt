@@ -1,0 +1,10 @@
+if(((Tags.get("Visible")!=null)&&
+				(Tags.get("Visible")==false))||
+				((Tags.get("Movies")!=null)&&
+				(Tags.get("Movies")==false))||
+				((Tags.get("TV Shows")!=null)&&
+				(Tags.get("TV Shows")==false))||
+				(!Tags.get("Visible")!=null&&
+				!Tags.get("Movies")!=null&&
+				!Tags.get("TV Shows")!=null)){
+			syncable=true;
