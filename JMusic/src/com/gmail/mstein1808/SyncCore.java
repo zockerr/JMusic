@@ -34,6 +34,7 @@ public class SyncCore implements Runnable{
 	JProgressBar prog;
 	String target;
 	JLabel label;
+	int selectedIndex;
 	/**
 	 * @param args
 	 * @throws IOException
@@ -140,6 +141,24 @@ public class SyncCore implements Runnable{
 					oldFile.delete();
 				}
 				for(Song currentSong:current){
+					String FileTarget;
+					switch(selectedIndex){
+					case 0:
+						FileTarget=target+"/"+currentSong.getTag("Artist")+"/"+currentSong.getTag("Album")+"/";
+						break;
+					case 1:
+						FileTarget=target+"/"+currentSong.getTag("Album")+"/";
+						break;
+					case 2:
+						FileTarget=target+"/"+currentSong.getTag("Artist")+"/";
+						break;
+					case 3:
+						FileTarget=target+"/";
+						break;
+					default:
+						FileTarget=target+"/"+currentSong.getTag("Artist")+"/"+currentSong.getTag("Album")+"/";
+						break;
+					}
 					String name=CopyFile(currentSong.getFilename(),target+"/"+currentSong.getTag("Artist")+"/"+currentSong.getTag("Album")+"/");
 					String old = new String();
 					try {
@@ -215,5 +234,8 @@ public class SyncCore implements Runnable{
 	}
 	public void setStatusField(JLabel lbl){
 		label = lbl;
+	}
+	public void setSelectedIndex(int index){
+		selectedIndex=index;
 	}
 }
