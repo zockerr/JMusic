@@ -43,6 +43,14 @@ import javax.swing.border.LineBorder;
 import javax.swing.AbstractListModel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.JComboBox;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class MainFrame {
 
@@ -52,6 +60,8 @@ public class MainFrame {
 	static SyncCore Engine;
 	private JTable table;
 	JLabel lblNewLabel ;
+	private JComboBox comboBox;
+	private JLabel lblNewLabel_1;
 
 	/**
 	 * Launch the application.
@@ -95,29 +105,48 @@ public class MainFrame {
 		frmMusicSync.setTitle(Messages.getString("MainFrame.frmMusicSync.title")); //$NON-NLS-1$
 		frmMusicSync.setResizable(false);
 		frmMusicSync.getContentPane().setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-		frmMusicSync.getContentPane().setLayout(new BorderLayout(0, 0));
+		frmMusicSync.getContentPane().setLayout(new MigLayout("", "[450px,grow]", "[][][][][][][][14px]"));
 		
-		progressBar = new JProgressBar();
-		frmMusicSync.getContentPane().add(progressBar, BorderLayout.SOUTH);
+		txtPath = new JTextField();
+		frmMusicSync.getContentPane().add(txtPath, "flowx,cell 0 0,growx");
+		txtPath.setText(Messages.getString("MainFrame.txtPath.text"));
+		txtPath.setColumns(10);
 		
-		JPanel panel = new JPanel();
-		panel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		frmMusicSync.getContentPane().add(panel, BorderLayout.CENTER);
-		panel.setLayout(new BorderLayout(0, 0));
+		JLabel lblPlaylists = new JLabel(Messages.getString("MainFrame.lblPlaylists.text")); //$NON-NLS-1$
+		frmMusicSync.getContentPane().add(lblPlaylists, "cell 0 1");
+		lblPlaylists.setBorder(new EmptyBorder(5, 0, 5, 0));
+		lblPlaylists.setFont(new Font("Tahoma", Font.BOLD, 12));
 		
-		lblNewLabel = new JLabel(Messages.getString("MainFrame.lblNewLabel.text")); //$NON-NLS-1$
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 10));
-		panel.add(lblNewLabel, BorderLayout.SOUTH);
+		JScrollPane scrollPane = new JScrollPane();
+		frmMusicSync.getContentPane().add(scrollPane, "cell 0 2,grow");
 		
-		JPanel panel_1 = new JPanel();
-		panel.add(panel_1, BorderLayout.CENTER);
-		panel_1.setLayout(new BorderLayout(0, 0));
+		table = new JTable(new PlaylistModel(Engine.Playlists));
+		scrollPane.setViewportView(table);
+		table.setBorder(new LineBorder(Color.GRAY));
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
-		JPanel panel_3 = new JPanel();
-		panel_1.add(panel_3, BorderLayout.CENTER);
-		panel_3.setLayout(new BorderLayout(0, 0));
+		lblNewLabel_1 = new JLabel(Messages.getString("MainFrame.lblNewLabel_1.text")); //$NON-NLS-1$
+		frmMusicSync.getContentPane().add(lblNewLabel_1, "flowx,cell 0 3");
+		
+		comboBox = new JComboBox(new String[] {
+				Messages.getString("FS.ArtistAlbumSong"),
+				Messages.getString("FS.AlbumSong"),
+				Messages.getString("FS.ArtistSong"),
+				Messages.getString("FS.Song"),
+		});
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("Action performed!");
+				JComboBox source = (JComboBox)e.getSource();
+				Engine.setSelectedIndex(source.getSelectedIndex());
+				System.out.println(source.getSelectedIndex());
+			}
+		});
+
+		frmMusicSync.getContentPane().add(comboBox, "cell 0 3,alignx right");
 		
 		JButton btnSyncNow = new JButton(Messages.getString("MainFrame.btnSyncNow.text"));
+		frmMusicSync.getContentPane().add(btnSyncNow, "cell 0 5,growx");
 		btnSyncNow.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
@@ -128,31 +157,16 @@ public class MainFrame {
 				syncThread.start();
 			}
 		});
-		panel_3.add(btnSyncNow, BorderLayout.SOUTH);
 		
-		JLabel lblPlaylists = new JLabel(Messages.getString("MainFrame.lblPlaylists.text")); //$NON-NLS-1$
-		lblPlaylists.setBorder(new EmptyBorder(5, 0, 5, 0));
-		lblPlaylists.setFont(new Font("Tahoma", Font.BOLD, 12));
-		panel_3.add(lblPlaylists, BorderLayout.NORTH);
+		lblNewLabel = new JLabel(Messages.getString("MainFrame.lblNewLabel.text")); //$NON-NLS-1$
+		frmMusicSync.getContentPane().add(lblNewLabel, "cell 0 6,growx");
+		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 10));
 		
-		JScrollPane scrollPane = new JScrollPane();
-		panel_3.add(scrollPane, BorderLayout.CENTER);
-		
-		table = new JTable(new PlaylistModel(Engine.Playlists));
-		scrollPane.setViewportView(table);
-		table.setBorder(new LineBorder(Color.GRAY));
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		
-		JPanel panel_2 = new JPanel();
-		panel_1.add(panel_2, BorderLayout.NORTH);
-		panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.X_AXIS));
-		
-		txtPath = new JTextField();
-		txtPath.setText(Messages.getString("MainFrame.txtPath.text")); //$NON-NLS-1$
-		panel_2.add(txtPath);
-		txtPath.setColumns(10);
+		progressBar = new JProgressBar();
+		frmMusicSync.getContentPane().add(progressBar, "cell 0 7,growx,aligny top");
 		
 		JButton btnBrowse = new JButton(Messages.getString("MainFrame.btnBrowse.text")); //$NON-NLS-1$
+		frmMusicSync.getContentPane().add(btnBrowse, "cell 0 0");
 		btnBrowse.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -164,8 +178,7 @@ public class MainFrame {
 				txtPath.setText(Path);
 			}
 		});
-		panel_2.add(btnBrowse);
-		frmMusicSync.setBounds(100, 100, 250, 300);
+		frmMusicSync.setBounds(100, 100, 250, 350);
 		frmMusicSync.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 
