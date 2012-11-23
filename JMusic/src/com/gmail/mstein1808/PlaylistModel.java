@@ -40,13 +40,16 @@ public class PlaylistModel extends AbstractTableModel implements TableModelListe
 		return data.size();
 	}
 
+	@Override
 	public String getColumnName(int col) {
 		return columnNames[col];
 	}
 
+	@Override
 	public Object getValueAt(int row, int col) {
 		return data.get(row)[col];
 	}
+	@Override
 	public Class getColumnClass(int c) {
         return getValueAt(0, c).getClass();
     }
@@ -63,6 +66,7 @@ public class PlaylistModel extends AbstractTableModel implements TableModelListe
 			}
 		}
 	}
+	@Override
 	public boolean isCellEditable(int row, int col){
 		if(col==0){
 			return true;
@@ -70,6 +74,7 @@ public class PlaylistModel extends AbstractTableModel implements TableModelListe
 			return false;
 		}
 	}
+	@Override
 	public void	setValueAt(Object value, int row, int col){
 		if(col==0){
 			Boolean v=(Boolean)value;

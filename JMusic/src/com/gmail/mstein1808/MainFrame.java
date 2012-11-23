@@ -3,29 +3,15 @@ import java.awt.EventQueue;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 
 import java.awt.Cursor;
-import java.awt.Window.Type;
-import java.awt.Dimension;
 import javax.swing.JProgressBar;
-import java.awt.BorderLayout;
-import javax.swing.JPanel;
 import javax.swing.JLabel;
 import java.awt.Font;
-import javax.swing.SwingConstants;
-import java.awt.FlowLayout;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
-import javax.swing.JList;
 import javax.swing.JTextField;
-import javax.swing.border.BevelBorder;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
 import org.jdom2.JDOMException;
 
 import java.awt.event.MouseAdapter;
@@ -34,21 +20,11 @@ import java.io.File;
 import java.io.IOException;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
-import javax.swing.Box;
 import javax.swing.JScrollPane;
-import javax.swing.JCheckBox;
-import javax.swing.ScrollPaneConstants;
-import java.awt.GridLayout;
 import javax.swing.border.LineBorder;
-import javax.swing.AbstractListModel;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JComboBox;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.ItemEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -60,7 +36,7 @@ public class MainFrame {
 	static SyncCore Engine;
 	private JTable table;
 	JLabel lblNewLabel ;
-	private JComboBox comboBox;
+	private JComboBox<String> comboBox;
 	private JLabel lblNewLabel_1;
 
 	/**
@@ -71,6 +47,7 @@ public class MainFrame {
 	public static void main(String[] args) throws JDOMException, IOException {
 		
 		EventQueue.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				try {
 					Engine=new SyncCore();
@@ -128,16 +105,17 @@ public class MainFrame {
 		lblNewLabel_1 = new JLabel(Messages.getString("MainFrame.lblNewLabel_1.text")); //$NON-NLS-1$
 		frmMusicSync.getContentPane().add(lblNewLabel_1, "flowx,cell 0 3");
 		
-		comboBox = new JComboBox(new String[] {
+		comboBox = new JComboBox<String>(new String[] {
 				Messages.getString("FS.ArtistAlbumSong"),
 				Messages.getString("FS.AlbumSong"),
 				Messages.getString("FS.ArtistSong"),
 				Messages.getString("FS.Song"),
 		});
 		comboBox.addActionListener(new ActionListener() {
+			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Action performed!");
-				JComboBox source = (JComboBox)e.getSource();
+				JComboBox<String> source = (JComboBox<String>)e.getSource();
 				Engine.setSelectedIndex(source.getSelectedIndex());
 				System.out.println(source.getSelectedIndex());
 			}

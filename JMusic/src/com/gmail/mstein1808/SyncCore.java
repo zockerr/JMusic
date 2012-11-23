@@ -9,12 +9,11 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.CharBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Properties;
 import java.lang.Runnable;
 
 import javax.swing.JLabel;
@@ -54,13 +53,13 @@ public class SyncCore implements Runnable{
 		Songs = new HashMap<String,Song>();
 		while (TrackIterator.hasNext()) {
 			Element currentTrack = null;
-			currentTrack = (Element) TrackIterator.next();
+			currentTrack = TrackIterator.next();
 			Song currentSong = new Song();
 			List<Element> currentTrackList = currentTrack.getContent(new ElementFilter());
 			Iterator<Element> SongIterator = currentTrackList.iterator();
 			while (SongIterator.hasNext()) {
-				Element currentTagname = (Element) SongIterator.next();
-				Element currentTagvalue = (Element) SongIterator.next();
+				Element currentTagname = SongIterator.next();
+				Element currentTagvalue = SongIterator.next();
 				currentSong.setTag(currentTagname.getTextNormalize(),currentTagvalue.getTextNormalize());
 			}
 			currentSong.setFilename(currentSong.getTag("Location"));
@@ -75,16 +74,16 @@ public class SyncCore implements Runnable{
 		Element Listroot=null;
 		boolean yetFound=false;
 		while(!yetFound){
-			Element currentItem=(Element)RootIterator.next();
+			Element currentItem=RootIterator.next();
 			if(currentItem.getTextNormalize().equals("Playlists")){
-				Listroot=(Element)RootIterator.next();
+				Listroot=RootIterator.next();
 				yetFound=true;
 			}
 		}
 		Playlists =new ArrayList<Playlist>();
 		Iterator<Element> ListIterator=Listroot.getContent(new ElementFilter()).iterator();
 		while(ListIterator.hasNext()){
-			Element currentList=(Element)ListIterator.next();
+			Element currentList=ListIterator.next();
 			Iterator<Element> currentListIterator=currentList.getContent(new ElementFilter()).iterator();
 			Playlist currentPlaylist=new Playlist(Songs);
 			while(currentListIterator.hasNext()){
@@ -170,8 +169,8 @@ public class SyncCore implements Runnable{
 								old = old + (char)currentchar;
 							}
 						}
+						fr.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					try{
@@ -179,7 +178,6 @@ public class SyncCore implements Runnable{
 						fw.write(old+FileTarget+name+"\n");
 						fw.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					synchronized(this){
@@ -228,6 +226,10 @@ public class SyncCore implements Runnable{
 	}
 	public void setSyncTarget(String t){
 		target = t;
+		File f=new File(target+"/syncsettings.prop");
+		if(f.exists()){
+			importSettings(f);
+		}
 	}
 	public void setStatusBar(JProgressBar bar){
 		prog = bar;
@@ -237,5 +239,28 @@ public class SyncCore implements Runnable{
 	}
 	public void setSelectedIndex(int index){
 		selectedIndex=index;
+	}
+	public void importSettings(File f){
+		Properties prop=new Properties();
+		try {
+			prop.load(new FileReader(f));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for(Playlist p : Playlists){
+			String ID=p.ID;
+			p.setSync(Boolean.parseBoolean(prop.getProperty(ID)));
+		}
+		int i=Integer.parseInt(prop.getProperty("FileStructureIndex"));
+		setSelectedIndex(i);
+	}
+	public void exportSettings(File f){
+		Properties prop=new Properties();
+		for(Playlist p : Playlists){
+			prop.setProperty(p.ID, Boolean.toString(p.getSync()));
+		}
+		prop.setProperty("FileStructureIndex", Integer.toString(selectedIndex));
 	}
 }
