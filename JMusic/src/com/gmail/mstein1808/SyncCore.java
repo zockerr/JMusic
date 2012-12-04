@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Properties;
 import java.lang.Runnable;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
 
 import org.jdom2.Document;
@@ -34,6 +36,7 @@ public class SyncCore implements Runnable{
 	String target;
 	JLabel label;
 	int selectedIndex;
+	MainFrame Frame;
 	/**
 	 * @param args
 	 * @throws IOException
@@ -123,6 +126,18 @@ public class SyncCore implements Runnable{
 		System.out.println("Done.");
 	}
 	public void sync(){
+		int result = JOptionPane.showConfirmDialog(new JFrame(), Messages.getString("SyncSettingsQuestion"),Messages.getString("SyncSettingsDialogTitle"),JOptionPane.YES_NO_OPTION);
+		if(result==JOptionPane.YES_OPTION){
+			File f = new File(target+"/syncsettings.prop");
+			if(!f.exists()){
+				try {
+					f.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			exportSettings(f);
+		}
 		synchronized(this){
 			prog.setMinimum(0);
 			prog.setMaximum(0);
@@ -252,9 +267,13 @@ public class SyncCore implements Runnable{
 		for(Playlist p : Playlists){
 			String ID=p.ID;
 			p.setSync(Boolean.parseBoolean(prop.getProperty(ID)));
+			for(int i=0; i<Frame.table.getModel().getRowCount();i++){
+				if(Frame.table.getModel().getValueAt(i, columnIndex))
+			}
 		}
 		int i=Integer.parseInt(prop.getProperty("FileStructureIndex"));
 		setSelectedIndex(i);
+		Frame.getCombo().setSelectedIndex(i);
 	}
 	public void exportSettings(File f){
 		Properties prop=new Properties();
@@ -262,5 +281,15 @@ public class SyncCore implements Runnable{
 			prop.setProperty(p.ID, Boolean.toString(p.getSync()));
 		}
 		prop.setProperty("FileStructureIndex", Integer.toString(selectedIndex));
+		try {
+			prop.store(new FileOutputStream(f),"");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void setFrame(MainFrame f){
+		Frame = f;
 	}
 }

@@ -34,9 +34,9 @@ public class MainFrame {
 	private JTextField txtPath;
 	private JProgressBar progressBar;
 	static SyncCore Engine;
-	private JTable table;
+	JTable table;
 	JLabel lblNewLabel ;
-	private JComboBox<String> comboBox;
+	private JComboBox comboBox;
 	private JLabel lblNewLabel_1;
 
 	/**
@@ -78,6 +78,7 @@ public class MainFrame {
 			catch (Exception e) {
 				e.printStackTrace();
 		}
+		Engine.setFrame(this);
 		frmMusicSync = new JFrame();
 		frmMusicSync.setTitle(Messages.getString("MainFrame.frmMusicSync.title")); //$NON-NLS-1$
 		frmMusicSync.setResizable(false);
@@ -105,7 +106,7 @@ public class MainFrame {
 		lblNewLabel_1 = new JLabel(Messages.getString("MainFrame.lblNewLabel_1.text")); //$NON-NLS-1$
 		frmMusicSync.getContentPane().add(lblNewLabel_1, "flowx,cell 0 3");
 		
-		comboBox = new JComboBox<String>(new String[] {
+		comboBox = new JComboBox(new String[] {
 				Messages.getString("FS.ArtistAlbumSong"),
 				Messages.getString("FS.AlbumSong"),
 				Messages.getString("FS.ArtistSong"),
@@ -115,7 +116,7 @@ public class MainFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("Action performed!");
-				JComboBox<String> source = (JComboBox<String>)e.getSource();
+				JComboBox source = (JComboBox)e.getSource();
 				Engine.setSelectedIndex(source.getSelectedIndex());
 				System.out.println(source.getSelectedIndex());
 			}
@@ -158,6 +159,9 @@ public class MainFrame {
 		});
 		frmMusicSync.setBounds(100, 100, 250, 350);
 		frmMusicSync.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	public JComboBox getCombo(){
+		return comboBox;
 	}
 
 }
