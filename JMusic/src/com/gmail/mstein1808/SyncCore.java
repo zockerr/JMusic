@@ -268,7 +268,9 @@ public class SyncCore implements Runnable{
 			String ID=p.ID;
 			p.setSync(Boolean.parseBoolean(prop.getProperty(ID)));
 			for(int i=0; i<Frame.table.getModel().getRowCount();i++){
-				if(Frame.table.getModel().getValueAt(i, columnIndex))
+				if((Boolean)Frame.table.getModel().getValueAt(i, 0)){
+					
+				}
 			}
 		}
 		int i=Integer.parseInt(prop.getProperty("FileStructureIndex"));
